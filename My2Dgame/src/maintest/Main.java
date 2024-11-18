@@ -1,4 +1,4 @@
-package main;
+package maintest;
 
 import javax.swing.JFrame;
 
