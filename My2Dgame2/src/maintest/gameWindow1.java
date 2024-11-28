@@ -25,6 +25,7 @@ public class gameWindow1 {
     	gameWindow1.setVisible(true);
         gameWindow1.setLocation(110, 0);
 		
+        gamePanel.setupGame();
 		gamePanel.startGameThread();
 		
     	

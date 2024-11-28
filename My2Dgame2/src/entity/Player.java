@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import maintest.GamePanel;
 import maintest.KeyHandler;
+import maintest.gameWindow2;
 
 public class Player extends Entity {
 	
@@ -19,6 +20,7 @@ public class Player extends Entity {
 	int y_move = 0;
 	int move = 0;
 	int move_amont = 5;
+	int hasItem = 0;
 	
     boolean isMoving = false;
 	
@@ -30,8 +32,11 @@ public class Player extends Entity {
 		solidArea = new Rectangle();
 		solidArea.x = 1;
 		solidArea.y = 1;
+		solidAreaDefaultX = solidArea.x;
+		solidAreaDefaultY = solidArea.y;
 		solidArea.width = 30;
 		solidArea.height = 30;
+		
 		
 		
 		setDefaultValues();
@@ -90,27 +95,39 @@ public class Player extends Entity {
 				direction = "right";
 				x_move++;
 				move++;
-				}
+			}
 				
 			// 타일 콜리전 체크
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
+			
+			int objIndex = gp.cChecker.checkObject(this, true);
+			pickUpObject(objIndex);
 				
 			// collision == false일때 플레이어는 못움직임
 			if(collisionOn == false) {
 					
 				switch(direction) {
 				case "up":
-					y -= speed *32;
+					if(y - gp.tileSize >= 0) {
+						y -= speed * gp.tileSize;
+					} 
 					break;
 				case "down":
-					y += speed *32;
+					if(y + gp.tileSize < 1280) {
+						y += speed * gp.tileSize;
+					}
 					break;
+					
 				case "left":
-					x -= speed *32;
+					if(x - gp.tileSize >= 0) {
+						x -= speed * gp.tileSize;						
+					}
 					break;
 				case "right":
-					x += speed *32;
+					if (x + gp.tileSize < 1280) {
+						x += speed * gp.tileSize;
+					}
 					break;
 				}
 			}
@@ -131,6 +148,23 @@ public class Player extends Entity {
 			
 		} 
 				
+	}
+	// 아이템이랑 어캐어캐 엮어야하는 부분
+	public void pickUpObject(int index) {
+		
+		if(index != 999) {
+		
+			String objectName = gp.obj[index].name;
+			
+			switch(objectName) {
+			case "obj":
+				gp.playSE(1);
+				hasItem++;
+				gp.obj[index] = null;
+				// 여기다가 아이템 갯수 올라간걸 창2 resource로 옮기는 코드 적으면 될 듯 
+				break;
+			}
+		}
 	}
 	
 	public void draw(Graphics2D g2) {

@@ -9,6 +9,7 @@ import java.util.Currency;
 import javax.swing.JPanel;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -21,19 +22,24 @@ public class GamePanel extends JPanel implements Runnable {
 	
 	public final int maxScreenCol = 40;
 	public final int maxScreenRow = 40;
-	public final int screenWidth = tileSize * maxScreenCol; //768
-	public final int screenHeight = tileSize * maxScreenRow; // 576
+	public final int screenWidth = tileSize * maxScreenCol; // 1280
+	public final int screenHeight = tileSize * maxScreenRow; // 1280
 	
 	// fps 설정
 	int FPS =10; // 조작감을 위해 값을 바꿀 필요가 있음
 	
-	
+	// 시스템
 	TileManager tileM = new TileManager(this);
 	KeyHandler keyH = new KeyHandler();
-	Thread gameThread;
+	Sound sound = new Sound();
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	Player player = new Player(this, keyH);
+	public ObjSetter oSetter = new ObjSetter(this);
+	Thread gameThread;
 	
+	// 엔티티랑 오브젝트
+	Player player = new Player(this, keyH);
+	public SuperObject obj[] = new SuperObject[10];
+
 	
 	
 	
@@ -43,6 +49,13 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);		
+	}
+	
+	public void setupGame() {
+		
+		oSetter.SetObject();
+		
+		playMusic(0);
 	}
 
 	public void startGameThread() {		
@@ -126,8 +139,31 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		tileM.draw(g2);
 		
+		for(int i = 0 ; i < obj.length ; i++ ) {
+			if(obj[i] != null) {
+				obj[i].draw(g2, this);
+			}			
+		}
+		
 		player.draw(g2);
 		
 		g2.dispose();
+	}
+	public void playMusic(int i) {
+		
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+	
+	public void stopMusic() {
+		
+		sound.stop();
+	}
+	
+	public void playSE(int i) {
+		
+		sound.setFile(i);
+		sound.play();
 	}
 }
